@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.TextView;
 
 import com.text.httputil.httpclient.HttpClientutil;
 import com.text.httputil.httpurl.HttpURLUtil;
@@ -16,6 +17,7 @@ public class JokeActivity extends AppCompatActivity {
             "?key=ba5de80f9a2055cae29f1fdb37e92129";
     private CheckBox checkBox;
     private boolean userHttpClient;
+    private TextView tv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +30,7 @@ public class JokeActivity extends AppCompatActivity {
                 userHttpClient = isChecked;
             }
         });
-
+        tv = ((TextView) findViewById(R.id.joke_tv));
     }
 
     public void click(View v) {
@@ -48,9 +50,15 @@ public class JokeActivity extends AppCompatActivity {
             @Override
             public void run() {
                 super.run();
-                String str = HttpURLUtil.doGet(url
+                final String str = HttpURLUtil.doGet(url
                         + "&time=" + System.currentTimeMillis() / 1000);
                 Log.i("httpurl get请求结果", str);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        tv.setText(str);
+                    }
+                });
             }
         }.start();
     }
@@ -60,9 +68,15 @@ public class JokeActivity extends AppCompatActivity {
             @Override
             public void run() {
                 super.run();
-                String str = HttpClientutil.doGet(url
+                final String str = HttpClientutil.doGet(url
                         + "&time=" + System.currentTimeMillis() / 1000);
                 Log.i("httpClient get请求结果", str);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        tv.setText(str);
+                    }
+                });
             }
         }.start();
     }
